@@ -1,0 +1,41 @@
+Linetracker API
+===============
+
+http://129.59.61.199:8080/linetracker/
+|
+|-index.html
+|   "Serve this API guide"
+|
+|-alllines
+|   "Returns info for all the lines that we have in the database."
+|   JsonArray
+|    -JsonObject
+|      -"lineId"    : String, "unique id for each line"
+|      -"latitude"  : Double, "where the line is"
+|      -"longitude" : Double, "where the line is"
+|      -"lineTag"   : String, "Human readable, short description of the line"
+|
+|-line/{lineId}/
+  |
+  |-submittime/{waitingTime}
+  |   "Submit waiting time for a line. waitingTime must be in seconds"
+  |
+  |-summary
+  |   "Get a summary for a line"
+  |   JsonObject
+  |    -"lineId"        : String,    "unique id for each line"
+  |    -"estimatedTime" : Integer,   "Value calculated from recent data, in seconds"
+  |    -"recentTimes"   : JsonArray, "Get a short list of at most ten recent submitted times"
+  |      -JsonObject
+  |        -"waitTime"  : Integer
+  |        -"timeStamp" : Integer, "When this time was submitted, in UTC seconds"
+  |
+  |-raw
+      "Get all the raw data that we have so far for this line"
+      JsonArray
+       -JsonObject
+         -"waitTime"  : Integer
+         -"timeStamp" : Integer, "When this time was submitted, in UTC seconds"
+
+
+
