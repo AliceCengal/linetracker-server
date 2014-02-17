@@ -36,6 +36,7 @@ object MyServiceActor {
 trait MyService extends HttpService {
 
   import MyServiceActor._
+  import LinetrackerServer._
 
   implicit def executionContext = actorRefFactory.dispatcher
 
@@ -197,13 +198,13 @@ class LinetrackerServer extends Actor with ActorLogging {
   }
 
   private def insertReportIntoDb(report: LineReport) {
-    reports = ReportRecord(
-      currentReportId,
-      report.lineId,
-      report.waitTime,
-      (System.currentTimeMillis() / 1000).asInstanceOf[Int]) ::
-        reports
 
+    val recorded = ReportRecord(currentReportId,
+                                report.lineId,
+                                report.waitTime,
+                                (System.currentTimeMillis() / 1000).asInstanceOf[Int])
+    
+    reports = recorded :: reports
     currentReportId = currentReportId + 1
     self ! SaveState
   }
@@ -254,7 +255,6 @@ class LinetrackerServer extends Actor with ActorLogging {
   private def raw(lineId: Int) {
     val buffer = new StringWriter()
     val writer = new JsonWriter(buffer)
-
     writer.beginArray()
 
     for (
@@ -346,7 +346,3 @@ object LineInfo {
 
 case class LineReport(lineId: Int,
                       waitTime: Int)
-
-case object Get
-
-
