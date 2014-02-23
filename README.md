@@ -4,10 +4,9 @@ Linetracker Server
 The server backend for the Linetracker webapp.
 
 ### Setup
-- Set the IP address of the server in "Boot.scala"
-- Set the path to the project root in the `MyServiceActor` object
-  in "MyService.scala"
-- Put the data file "linetracker.json" in `resources/data/`
+- Create a file in `/src/main/resources/data` with name "server_info.txt". Put the address of the server
+  as the only content of this file, in the first line.
+- Put the data file "linetracker.json" in `/src/main/resources/data/`
 - In the project root, run `sbt` to get to the sbt console, and then
   run `compile` followed by `run`
 

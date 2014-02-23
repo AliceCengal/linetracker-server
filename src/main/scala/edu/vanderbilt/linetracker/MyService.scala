@@ -27,15 +27,10 @@ class MyServiceActor extends Actor with MyService {
   def receive = runRoute(myRoute)
 }
 
-object MyServiceActor {
-  val PROJECT_ROOT = ""; // Set this to the root of this project
-  val RESOURCE = PROJECT_ROOT + "src/main/resources/"
-}
 
 // this trait defines our service behavior independently from the service actor
 trait MyService extends HttpService {
 
-  import MyServiceActor._
   import LinetrackerServer._
 
   implicit def executionContext = actorRefFactory.dispatcher
@@ -46,7 +41,7 @@ trait MyService extends HttpService {
   val myRoute =
     pathPrefix("linetracker") {
       path("index.html") {
-        getFromFile(RESOURCE + "linetracker_index.txt")
+        getFromResource("linetracker_index.txt")
       } ~
       path("alllines") {
         respondWithMediaType(`application/json`) {
@@ -78,7 +73,6 @@ trait MyService extends HttpService {
 class LinetrackerServer extends Actor with ActorLogging {
 
   import scala.collection.JavaConverters._
-  import MyServiceActor._
   import LinetrackerServer._
 
   private val parser = new JsonParser()
@@ -105,7 +99,7 @@ class LinetrackerServer extends Actor with ActorLogging {
 
     import ReportRecord._
 
-    val f = new File(RESOURCE + "data/linetracker.json")
+    val f = new File(this.getClass.getResource("/data/linetracker.json").getPath())
     if (f.isFile) {
 
       val ifs = new InputStreamReader(new FileInputStream(f))
@@ -163,15 +157,14 @@ class LinetrackerServer extends Actor with ActorLogging {
     }
 
     val b = initBuffer()
-    write(b, RESOURCE + "data/linetracker" + (System.currentTimeMillis() / 1000) + ".json")
-    write(b, RESOURCE + "data/linetracker.json")
+    write(b, this.getClass.getResource("/data/linetracker.json").getPath)
   }
 
   private def loadLinesInfo() {
 
     import LineInfo._
 
-    val f = new File(RESOURCE + "lines_info.json")
+    val f = new File(this.getClass.getResource("/lines_info.json").getPath)
     if (f.isFile) {
 
       val ifs = new InputStreamReader(new FileInputStream(f))
