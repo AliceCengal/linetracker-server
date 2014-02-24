@@ -19,13 +19,19 @@ import com.google.gson.stream.JsonWriter
  *
  * Created by athran on 2/24/14.
  */
-trait DataServer extends Actor {}
+trait DataServer extends Actor with ActorLogging {
+
+  def walkingDead: Receive = {
+    case _ => log.error("I'm dead, please don't bother me.")
+  }
+
+}
 
 object DataServer {
 
   def props: Props = Props[BasicServer]
 
-  private class BasicServer extends DataServer with ActorLogging {
+  private class BasicServer extends DataServer {
 
     import scala.collection.JavaConverters._
     import LinetrackerServer._
@@ -119,10 +125,6 @@ object DataServer {
       reports = recorded :: reports
       currentReportId = currentReportId + 1
       self ! SaveState
-    }
-
-    def walkingDead: Receive = {
-      case _ => log.error("I'm dead, please don't bother me.")
     }
 
   }

@@ -9,6 +9,8 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 
 /**
+ * Main subserver that takes in domainized HTTP requests directly from the Router.
+ *
  * Created by athran on 2/24/14.
  */
 class LinetrackerServer extends Actor with ActorLogging {
