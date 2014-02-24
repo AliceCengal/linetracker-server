@@ -1,9 +1,10 @@
 package edu.vanderbilt.linetracker
 
-import akka.actor._
+
 import java.io._
 import com.google.gson.JsonParser
 import com.google.gson.stream.JsonWriter
+import akka.actor.{Props, ActorLogging, Actor}
 
 /**
  * Interface for the database of waiting time reports. Use the `props`
@@ -117,7 +118,8 @@ object DataServer {
 
     private def insertReportIntoDb(lineId: Int, waitTime: Int) {
 
-      val recorded = ReportRecord(currentReportId,
+      val recorded = ReportRecord(
+        currentReportId,
         lineId,
         waitTime,
         (System.currentTimeMillis() / 1000).asInstanceOf[Int])
