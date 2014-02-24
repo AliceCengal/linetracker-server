@@ -47,8 +47,8 @@ object DataServer {
 
     override def receive: Receive = {
       case SubmitTime(lineId, waitTime) => insertReportIntoDb(lineId, waitTime)
-      case SaveState                    => storeReports()
       case GetReportsFor(lineId)        => sender ! reports.iterator
+      case SaveState                    => storeReports()
       case _                            =>
     }
 

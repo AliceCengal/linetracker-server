@@ -92,8 +92,8 @@ class LinetrackerServer extends Actor with ActorLogging {
       cursor <- (dataServer ? GetReportsFor(lineId)).mapTo[Iterator[ReportRecord]];
       shortList = cursor.
           toList.
-          take(10).
-          sortWith(_.waitTime > _.waitTime)
+          sortWith(_.waitTime > _.waitTime).
+          take(10)
     ) {
 
       // TODO: Strategy for calculating estimatedTime
@@ -127,8 +127,11 @@ class LinetrackerServer extends Actor with ActorLogging {
     val requester = sender
 
     for (
-      cursor <- (dataServer ? GetReportsFor(lineId)).mapTo[Iterator[ReportRecord]];
-      report <- cursor.toList.sortWith(_.waitTime > _.waitTime)
+      cursor <- (dataServer ? GetReportsFor(lineId)).
+          mapTo[Iterator[ReportRecord]];
+      report <- cursor.
+          toList.
+          sortWith(_.waitTime > _.waitTime)
     ) {
       writer.
           beginObject().
