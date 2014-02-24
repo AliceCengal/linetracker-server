@@ -84,31 +84,40 @@ class LinetrackerServer extends Actor with ActorLogging {
     val writer = new JsonWriter(buffer)
 
     writer.beginObject()
-    writer.name("lineId").value(lineId)
+    writer name "lineId" value lineId
 
     val requester = sender
 
     for (
       cursor <- (dataServer ? GetReportsFor(lineId)).mapTo[Iterator[ReportRecord]];
-      shortList = cursor.
-          toList.
-          sortWith(_.waitTime > _.waitTime).
-          take(10)
+      shortList = (((cursor
+          toList)
+          sortWith { _.waitTime > _.waitTime })
+          take 10)
     ) {
 
       // TODO: Strategy for calculating estimatedTime
-      writer.name("estimatedTime").value(
-        if (shortList.length == 0) 0
-        else shortList(0).waitTime
-      )
+      ((writer
+          name    "estimatedTime")
+          value   (if (shortList.length == 0) 0
+                   else shortList(0).waitTime))
 
       writer.name("recentTimes").beginArray()
       for (report <- shortList) {
+
+        ((((writer
+            beginObject)
+            name "waitTime"  value (report waitTime))
+            name "timeStamp" value (report timeStamp))
+            endObject)
+
+        /*
         writer.
             beginObject().
             name("waitTime").value(report.waitTime).
             name("timeStamp").value(report.timeStamp).
             endObject()
+        */
       }
       writer.endArray()
 
@@ -133,11 +142,11 @@ class LinetrackerServer extends Actor with ActorLogging {
           toList.
           sortWith(_.waitTime > _.waitTime)
     ) {
-      writer.
-          beginObject().
-          name("waitTime").value(report.waitTime).
-          name("timeStamp").value(report.timeStamp).
-          endObject()
+      ((((writer
+          beginObject)
+          name "waitTime"  value (report waitTime))
+          name "timeStamp" value (report timeStamp))
+          endObject)
     }
 
     writer.endArray()
@@ -146,7 +155,7 @@ class LinetrackerServer extends Actor with ActorLogging {
   }
 
   def walkingDead: Receive = {
-    case _ => log.error("I'm dead, please don't bother me.")
+    case _ => log error "I'm dead, please don't bother me."
   }
 
 }
