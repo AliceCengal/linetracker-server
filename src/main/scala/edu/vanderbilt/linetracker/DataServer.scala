@@ -47,7 +47,7 @@ object DataServer {
 
     override def receive: Receive = {
       case SubmitTime(lineId, waitTime) => insertReportIntoDb(lineId, waitTime)
-      case GetReportsFor(lineId)        => sender ! reports.iterator
+      case GetReportsFor(lineId)        => sender ! reports.filter(_.lineId == lineId).iterator
       case SaveState                    => storeReports()
       case _                            =>
     }
@@ -82,10 +82,13 @@ object DataServer {
     }
 
     private def updateCurrentId() {
-      currentReportId = reports.
-          sortWith( _.reportId > _.reportId ).
-          apply(0).
-          reportId + 1
+      currentReportId =
+          if (reports.length > 0) {
+            reports.
+                sortWith(_.reportId > _.reportId).
+                apply(0).
+                reportId + 1
+          } else 1
     }
 
     private def storeReports() {

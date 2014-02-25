@@ -24,6 +24,8 @@ class LinetrackerServer extends Actor with ActorLogging {
   implicit val timeout   = Timeout(5 seconds)
   private val dataServer = context.actorOf(DataServer.props, "DataServer")
 
+  implicit def executionContext = context.dispatcher
+
   override def preStart(): Unit = {
     loadLinesInfo()
   }
@@ -104,25 +106,15 @@ class LinetrackerServer extends Actor with ActorLogging {
 
       writer.name("recentTimes").beginArray()
       for (report <- shortList) {
-
         ((((writer
             beginObject)
             name "waitTime"  value (report waitTime))
             name "timeStamp" value (report timeStamp))
             endObject)
-
-        /*
-        writer.
-            beginObject().
-            name("waitTime").value(report.waitTime).
-            name("timeStamp").value(report.timeStamp).
-            endObject()
-        */
       }
       writer.endArray()
 
       writer.endObject()
-
       requester ! buffer.toString
     }
 
@@ -135,23 +127,22 @@ class LinetrackerServer extends Actor with ActorLogging {
 
     val requester = sender
 
-    for (
-      cursor <- (dataServer ? GetReportsFor(lineId)).
-          mapTo[Iterator[ReportRecord]];
-      report <- cursor.
+    for (cursor <- (dataServer ? GetReportsFor(lineId)).
+        mapTo[Iterator[ReportRecord]]) {
+
+      for (report <- cursor.
           toList.
-          sortWith(_.waitTime > _.waitTime)
-    ) {
-      ((((writer
-          beginObject)
-          name "waitTime"  value (report waitTime))
-          name "timeStamp" value (report timeStamp))
-          endObject)
+          sortWith(_.waitTime > _.waitTime)) {
+        ((((writer
+            beginObject)
+            name "waitTime" value (report waitTime))
+            name "timeStamp" value (report timeStamp))
+            endObject)
+      }
+
+      writer.endArray()
+      requester ! buffer.toString
     }
-
-    writer.endArray()
-
-    requester ! buffer.toString
   }
 
   def walkingDead: Receive = {
