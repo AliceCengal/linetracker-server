@@ -38,33 +38,36 @@ trait MyService extends HttpService {
 
   val myRoute =
     pathPrefix("linetracker") {
-      path("index.html") {
-        getFromResource("linetracker_index.txt")
-      } ~
-      path("alllines") {
-        respondWithMediaType(`application/json`) {
-          complete {
-            import LinetrackerServer._
-            (linetracker ? GetAllLines).mapTo[String]
+      pathPrefix("api") {
+        path("index.html") {
+          getFromResource("linetracker_index.txt")
+        } ~
+        path("alllines") {
+          respondWithMediaType(`application/json`) {
+            complete {
+              import LinetrackerServer._
+              (linetracker ? GetAllLines).mapTo[String]
+            }
+          }
+        } ~
+        pathPrefix("line" / IntNumber) { id =>
+          path("submittime" / IntNumber) { waitTime =>
+            linetracker ! SubmitTime(id, waitTime)
+            complete("OK")
+          } ~
+          path("summary") {
+            complete {
+              (linetracker ? SummaryFor(id)).mapTo[String]
+            }
+          } ~
+          path("raw") {
+            complete {
+              (linetracker ? RawFor(id)).mapTo[String]
+            }
           }
         }
       } ~
-      pathPrefix("line" / IntNumber) { id =>
-        path("submittime" / IntNumber) { waitTime =>
-          linetracker ! SubmitTime(id, waitTime)
-          complete("OK")
-        } ~
-        path("summary") {
-          complete {
-            (linetracker ? SummaryFor(id)).mapTo[String]
-          }
-        } ~
-        path("raw") {
-          complete {
-            (linetracker ? RawFor(id)).mapTo[String]
-          }
-        }
-      }
+      getFromResourceDirectory("website")
     }
 
 }

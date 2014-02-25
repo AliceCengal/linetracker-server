@@ -9,3 +9,4 @@ test-output/
 
 # operation specifics
 /src/main/resources/data/
+/src/main/resources/website/
