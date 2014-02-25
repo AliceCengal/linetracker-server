@@ -1,7 +1,7 @@
 Linetracker API
 ===============
 
-http://129.59.61.199:8080/linetracker/
+http://129.59.61.199:8080/linetracker/api/
 |
 |-index.html
 |   "Serve this API guide"
