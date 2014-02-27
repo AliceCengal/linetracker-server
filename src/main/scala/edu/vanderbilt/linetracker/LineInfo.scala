@@ -5,10 +5,10 @@ import com.google.gson.stream.JsonWriter
 /**
  * Created by athran on 2/24/14.
  */
-case class LineInfo(lineId: Int,
-                    latitude: Double,
+case class LineInfo(lineId:    Int,
+                    latitude:  Double,
                     longitude: Double,
-                    tag: String
+                    tag:       String
                        ) {
 
   def writeToJson(writer: JsonWriter) {
@@ -17,7 +17,7 @@ case class LineInfo(lineId: Int,
 
     writer.
         beginObject().
-        name(ID).value(lineId.toString).
+        name(ID). value(lineId.toString).
         name(LAT).value(latitude).
         name(LON).value(longitude).
         name(TAG).value(tag).
@@ -28,7 +28,7 @@ case class LineInfo(lineId: Int,
 }
 
 object LineInfo {
-  val ID = "lineId"
+  val ID  = "lineId"
   val LAT = "latitude"
   val LON = "longitude"
   val TAG = "lineTag"
