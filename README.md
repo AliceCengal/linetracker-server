@@ -8,8 +8,8 @@ The server backend for the Linetracker webapp.
   server and the absolute path to the linetracker website directory, each in its own line.
   You can put in `localhost` for local testing. Example:
 
-    localhost  
-    /home/john/git_repos/linetracker
+      localhost
+      /home/john/git_repos/linetracker  
 
 - Put the data file "linetracker.json" into `/src/main/resources/data`. If you don't have the file,
   create a new file in the folder with the name "linetracker.json" and type in `[]` into it
