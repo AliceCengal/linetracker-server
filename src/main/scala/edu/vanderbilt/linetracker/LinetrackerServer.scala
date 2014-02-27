@@ -94,7 +94,7 @@ class LinetrackerServer extends Actor with ActorLogging {
       cursor <- (dataServer ? GetReportsFor(lineId)).mapTo[Iterator[ReportRecord]];
       shortList = (((cursor
           toList)
-          sortWith { _.waitTime > _.waitTime })
+          sortWith { _.timeStamp > _.timeStamp })
           take 10)
     ) {
 
