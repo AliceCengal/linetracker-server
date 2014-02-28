@@ -132,7 +132,7 @@ class LinetrackerServer extends Actor with ActorLogging {
 
       for (report <- cursor.
           toList.
-          sortWith(_.waitTime > _.waitTime)) {
+          sortWith(_.timeStamp > _.timeStamp)) {
         ((((writer
             beginObject)
             name "waitTime" value (report waitTime))
